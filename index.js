@@ -3,12 +3,6 @@ import userRouter from './routes/user.js';
 import indexRoutes from './routes/index.js';
 
 import { Book } from './entitys/books.js';
-const stor = {
-    library: [
-        new Book(),
-        new Book(),
-    ]
-}
 
 const app = express();
 app.use(express.json());
