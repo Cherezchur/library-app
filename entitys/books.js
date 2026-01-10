@@ -5,9 +5,10 @@ export class Book {
         title = '',
         desc = '',
         authors = '',
-        favorite = '',
+        favorite = false,
         fileCover = '',
         fileName = '',
+        fileBook = '1768069608034-ffffff.txt',
         id = uuidv4(),
     ) {
         this.title = title
@@ -16,6 +17,7 @@ export class Book {
         this.favorite = favorite
         this.fileCover = fileCover
         this.fileName = fileName
+        this.fileBook = fileBook,
         this.id = id
     }
 }

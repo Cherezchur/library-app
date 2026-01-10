@@ -2,5 +2,8 @@ package-lock.json
 server.log
 
 node_modules
+public
 
 .env
+
+

@@ -1,5 +1,10 @@
 import express from 'express';
+import path from 'path';
+
+import fileMulter from '../middleware/file.js';
+
 import { Book } from '../entitys/books.js';
+import { rootPath } from '../root-path.const.js';
 
 const router = express.Router();
 
@@ -28,6 +33,27 @@ router.get('/:id', (req, res) => {
     }
 })
 
+router.get('/:id/download', (req, res) => {
+    const { library } = stor;
+    const { id } = req.params;
+    const idx = library.findIndex(el => el.id === id);
+
+    if (idx !== -1) {
+        const fileName = library[idx].fileBook;
+        const options = {
+            root: path.join(rootPath, 'public')
+        };
+        res.sendFile(fileName, options, (err) => {          
+            if (err) {
+                res.status(404).send('Файл не найден');
+            }
+        });
+    } else {
+        res.status(404);
+        res.json('404 | страница не найдена');
+    }
+})
+
 router.post('/', (req, res) => {
     const { library } = stor;
     const {
@@ -37,6 +63,7 @@ router.post('/', (req, res) => {
         favorite,
         fileCover,
         fileName,
+        fileBook
     } = req.body;
 
     const newBook = new Book(
@@ -46,7 +73,9 @@ router.post('/', (req, res) => {
         favorite,
         fileCover,
         fileName,
+        fileBook
     )
+    
     library.push(newBook);
 
     res.status(201);
@@ -62,6 +91,7 @@ router.put('/:id', (req, res) => {
         favorite,
         fileCover,
         fileName,
+        fileBook
     } = req.body;
     const { id } = req.params;
     const idx = library.findIndex(el => el.id === id);
@@ -75,6 +105,7 @@ router.put('/:id', (req, res) => {
             favorite,
             fileCover,
             fileName,
+            fileBook
         }
 
         res.json(library[idx]);
@@ -97,5 +128,16 @@ router.delete('/:id', (req, res) => {
         res.json('404 | страница не найдена')
     }
 })
+
+router.post('/upload-file', 
+    fileMulter.single('book-file'),
+    (req, res) => {      
+        if (req.file) {
+            const {path} = req.file;
+            res.json({path});
+        }
+        res.json();
+    }
+)
 
 export default router;

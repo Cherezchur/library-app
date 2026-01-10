@@ -1,9 +1,8 @@
 import express from 'express';
 import logger from './middleware/logger.js';
+import err404 from './middleware/err-404.js';
 import userRouter from './routes/user.js';
 import indexRoutes from './routes/index.js';
-
-import { Book } from './entitys/books.js';
 
 const app = express();
 app.use(express.json());
@@ -11,6 +10,8 @@ app.use(express.json());
 app.use(logger);
 app.use('/api/user', userRouter);
 app.use('/api/books', indexRoutes);
+
+app.use(err404);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
