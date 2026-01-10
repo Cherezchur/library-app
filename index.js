@@ -48,20 +48,7 @@ app.post('/api/user/login', (req, res) => {
 
 app.get('/api/books', (req, res) => {
     const { library } = stor;
-    const { id } = req.params;
-
-    if (id) {
-        const idx = library.findIndex(el => el.id === id);
-
-        if (idx !== -1) {
-            res.json(library[idx]);
-        } else {
-            res.status(404);
-            res.json('404 | страница не найдена');
-        }
-    } else {
-        res.json(library);
-    }
+    res.json(library);
 })
 
 app.get('/api/books/:id', (req, res) => {
