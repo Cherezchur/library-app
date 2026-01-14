@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 export class Book {
     constructor(
-        title = '',
+        title = 'Заголовок книги',
         desc = '',
         authors = '',
         favorite = false,

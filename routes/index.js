@@ -17,7 +17,12 @@ const stor = {
 
 router.get('/', (req, res) => {
     const { library } = stor;
-    res.json(library);
+    console.log('index page');
+    
+    res.render('library/index', {
+        title: 'Библиотека',
+        library: library
+    });
 })
 
 router.get('/:id', (req, res) => {
