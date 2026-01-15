@@ -17,7 +17,6 @@ const stor = {
 
 router.get('/', (req, res) => {
     const { library } = stor;
-    console.log('index page');
     
     res.render('library/index', {
         title: 'Библиотека',
@@ -25,7 +24,13 @@ router.get('/', (req, res) => {
     });
 })
 
-router.get('/:id', (req, res) => {
+router.get('/create', (req, res) => {
+    res.render('library/create', {
+        title: 'Добавить книгу в библиотеку',
+    });
+})
+
+router.get('/:id', (req, res) => {   
     const { library } = stor;
     const { id } = req.params;
     const idx = library.findIndex(el => el.id === id);
@@ -62,7 +67,7 @@ router.get('/:id/download', (req, res) => {
     }
 })
 
-router.post('/', (req, res) => {
+router.post('/create', (req, res) => {;
     const { library } = stor;
     const {
         title,
@@ -86,11 +91,26 @@ router.post('/', (req, res) => {
     
     library.push(newBook);
 
-    res.status(201);
-    res.json(newBook);
+    res.redirect('/books');
 })
 
-router.put('/:id', (req, res) => {
+router.get('/update/:id', (req, res) => {
+    const { library } = stor;
+    const { id } = req.params;
+    const idx = library.findIndex(el => el.id === id);
+
+    if (idx !== -1) {
+        res.render('library/update', {
+            title: 'Редактировать книгу',
+            book: library[idx]
+        });
+    } else {
+        res.status(404);
+        res.json('404 | страница не найдена');
+    }
+}) 
+
+router.post('/update/:id', (req, res) => {
     const { library } = stor;
     const {
         title,
@@ -104,23 +124,22 @@ router.put('/:id', (req, res) => {
     const { id } = req.params;
     const idx = library.findIndex(el => el.id === id);
 
-    if (idx !== -1) {
-        library[idx] = {
-            ...library[idx],
-            title,
-            desc,
-            authors,
-            favorite,
-            fileCover,
-            fileName,
-            fileBook
-        }
-
-        res.json(library[idx]);
-    } else {
-        res.status(404);
-        res.json('404 | страница не найдена')
+    if (idx === -1) {
+        res.redirect('/404');
     }
+
+    library[idx] = {
+        ...library[idx],
+        title,
+        desc,
+        authors,
+        favorite,
+        fileCover,
+        fileName,
+        fileBook
+    }
+
+    res.redirect(`/books/${id}`);
 })
 
 router.delete('/:id', (req, res) => {
