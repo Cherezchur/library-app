@@ -31,7 +31,10 @@ router.get('/:id', (req, res) => {
     const idx = library.findIndex(el => el.id === id);
 
     if (idx !== -1) {
-        res.json(library[idx]);
+        res.render('library/view', {
+            title: 'Книга',
+            book: library[idx]
+        });
     } else {
         res.status(404);
         res.json('404 | страница не найдена');

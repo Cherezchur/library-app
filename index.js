@@ -10,8 +10,8 @@ app.use(express.json());
 app.set('view engine', 'ejs')
 
 app.use(logger);
-app.use('/api/user', userRouter);
-app.use('/api/books', indexRoutes);
+app.use('/user', userRouter);
+app.use('/books', indexRoutes);
 
 app.use(err404);
 

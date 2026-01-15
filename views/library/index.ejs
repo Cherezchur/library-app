@@ -1,5 +1,7 @@
 <!doctype html>
 <html lang="ru">
-    <%- include('../layouts/head', {title: title}) %>
+    <%- include('../layouts/layout-start', {title: title}) %>
+    <%- include('../layouts/menu', { itemName: '', id: ''}) %>
     <%- include('body', {title: title, library: library}) %>
+    <%- include('../layouts/layout-end') %>
 </html>
