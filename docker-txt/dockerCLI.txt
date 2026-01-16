@@ -1,0 +1,162 @@
+PS F:\learning\netologiya\library-app> docker pull busybox
+Using default tag: latest
+request returned 500 Internal Server Error for API route and version http://%2F%2F.%2Fpipe%2FdockerDesktopLinuxEngine/v1.52/images/create?fromImage=docker.io%2Flibrary%2Fbusybox&tag=latest, check if the server supports the requested API version
+PS F:\learning\netologiya\library-app> docker pull busybox
+Using default tag: latest
+latest: Pulling from library/busybox
+e59838ecfec5: Pull complete
+0f4360cf3c3e: Download complete
+Digest: sha256:2383baad1860bbe9d8a7a843775048fd07d8afe292b94bd876df64a69aae7cb1
+Status: Downloaded newer image for busybox:latest
+docker.io/library/busybox:latest
+PS F:\learning\netologiya\library-app> docker run --name pinger -it busybox ping -c 7 netology.ru
+PING netology.ru (51.250.51.8): 56 data bytes
+64 bytes from 51.250.51.8: seq=0 ttl=63 time=93.052 ms
+64 bytes from 51.250.51.8: seq=2 ttl=63 time=64.360 ms
+64 bytes from 51.250.51.8: seq=3 ttl=63 time=44.476 ms
+64 bytes from 51.250.51.8: seq=6 ttl=63 time=42.490 ms
+
+--- netology.ru ping statistics ---
+7 packets transmitted, 6 packets received, 14% packet loss
+round-trip min/avg/max = 42.490/136.130/338.111 ms
+PS F:\learning\netologiya\library-app> docker ps -a
+CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS                      PORTS     NAMES
+208924766f5e   busybox   "ping -c 7 netology.…"   32 seconds ago   Exited (0) 24 seconds ago             pinger
+PS F:\learning\netologiya\library-app> docker logs pinger
+PING netology.ru (51.250.51.8): 56 data bytes
+64 bytes from 51.250.51.8: seq=0 ttl=63 time=93.052 ms
+64 bytes from 51.250.51.8: seq=2 ttl=63 time=64.360 ms
+64 bytes from 51.250.51.8: seq=3 ttl=63 time=44.476 ms
+64 bytes from 51.250.51.8: seq=5 ttl=63 time=234.291 ms
+64 bytes from 51.250.51.8: seq=6 ttl=63 time=42.490 ms
+
+7 packets transmitted, 6 packets received, 14% packet loss
+round-trip min/avg/max = 42.490/136.130/338.111 ms
+PS F:\learning\netologiya\library-app> docker run --name pinger
+docker: 'docker run' requires at least 1 argument
+Usage:  docker run [OPTIONS] IMAGE [COMMAND] [ARG...]
+See 'docker run --help' for more information
+PS F:\learning\netologiya\library-app> docker run --name pinger busybox ping -c 7 netology.ru    
+docker: Error response from daemon: Conflict. The container name "/pinger" is already in use by container "208924766f5e0172181d3ddf4616002f6794d9adaaa5c31be9276fe54c87316c". You have to remove (or rename) that container to be able to reuse that name.
+
+Run 'docker run --help' for more information
+PS F:\learning\netologiya\library-app> docker start pinger
+pinger
+PS F:\learning\netologiya\library-app> docker logs pinger
+PING netology.ru (51.250.51.8): 56 data bytes
+64 bytes from 51.250.51.8: seq=0 ttl=63 time=93.052 ms
+64 bytes from 51.250.51.8: seq=1 ttl=63 time=338.111 ms
+64 bytes from 51.250.51.8: seq=2 ttl=63 time=64.360 ms
+64 bytes from 51.250.51.8: seq=3 ttl=63 time=44.476 ms
+64 bytes from 51.250.51.8: seq=5 ttl=63 time=234.291 ms
+64 bytes from 51.250.51.8: seq=6 ttl=63 time=42.490 ms
+
+--- netology.ru ping statistics ---
+7 packets transmitted, 6 packets received, 14% packet loss
+round-trip min/avg/max = 42.490/136.130/338.111 ms
+PING netology.ru (51.250.51.8): 56 data bytes
+64 bytes from 51.250.51.8: seq=0 ttl=63 time=48.227 ms
+64 bytes from 51.250.51.8: seq=1 ttl=63 time=433.976 ms
+64 bytes from 51.250.51.8: seq=3 ttl=63 time=72.660 ms
+64 bytes from 51.250.51.8: seq=5 ttl=63 time=41.792 ms
+64 bytes from 51.250.51.8: seq=6 ttl=63 time=112.634 ms
+--- netology.ru ping statistics ---
+7 packets transmitted, 7 packets received, 0% packet loss
+round-trip min/avg/max = 41.554/113.543/433.976 ms
+PS F:\learning\netologiya\library-app> docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+PS F:\learning\netologiya\library-app> docker ps -a
+CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS                          PORTS     NAMES
+208924766f5e   busybox   "ping -c 7 netology.…"   5 minutes ago   Exited (0) About a minute ago             pinger
+PS F:\learning\netologiya\library-app> docker logs -t pinger
+2026-01-16T09:17:10.225212051Z PING netology.ru (51.250.51.8): 56 data bytes
+2026-01-16T09:17:10.318303283Z 64 bytes from 51.250.51.8: seq=0 ttl=63 time=93.052 ms
+2026-01-16T09:17:11.564633335Z 64 bytes from 51.250.51.8: seq=1 ttl=63 time=338.111 ms
+2026-01-16T09:17:12.290607031Z 64 bytes from 51.250.51.8: seq=2 ttl=63 time=64.360 ms
+2026-01-16T09:17:13.270852840Z 64 bytes from 51.250.51.8: seq=3 ttl=63 time=44.476 ms
+2026-01-16T09:17:15.462308601Z 64 bytes from 51.250.51.8: seq=5 ttl=63 time=234.291 ms
+2026-01-16T09:17:16.270881103Z 64 bytes from 51.250.51.8: seq=6 ttl=63 time=42.490 ms
+2026-01-16T09:17:17.228997152Z
+2026-01-16T09:17:17.229016558Z --- netology.ru ping statistics ---
+2026-01-16T09:17:17.229018058Z 7 packets transmitted, 6 packets received, 14% packet loss
+2026-01-16T09:17:17.229019058Z round-trip min/avg/max = 42.490/136.130/338.111 ms
+2026-01-16T09:21:19.473287706Z PING netology.ru (51.250.51.8): 56 data bytes
+2026-01-16T09:21:19.521535335Z 64 bytes from 51.250.51.8: seq=0 ttl=63 time=48.227 ms
+2026-01-16T09:21:20.909579017Z 64 bytes from 51.250.51.8: seq=1 ttl=63 time=433.976 ms
+2026-01-16T09:21:22.549086190Z 64 bytes from 51.250.51.8: seq=3 ttl=63 time=72.660 ms
+2026-01-16T09:21:24.519005822Z 64 bytes from 51.250.51.8: seq=5 ttl=63 time=41.792 ms
+2026-01-16T09:21:25.590713929Z 64 bytes from 51.250.51.8: seq=6 ttl=63 time=112.634 ms
+2026-01-16T09:21:25.590753734Z
+2026-01-16T09:21:25.590759034Z --- netology.ru ping statistics ---
+2026-01-16T09:21:25.590763535Z 7 packets transmitted, 7 packets received, 0% packet loss
+2026-01-16T09:21:25.590767735Z round-trip min/avg/max = 41.554/113.543/433.976 ms
+PS F:\learning\netologiya\library-app> docker start pinger  
+pinger
+PS F:\learning\netologiya\library-app> docker logs -t pinger
+2026-01-16T09:17:10.225212051Z PING netology.ru (51.250.51.8): 56 data bytes
+2026-01-16T09:17:10.318303283Z 64 bytes from 51.250.51.8: seq=0 ttl=63 time=93.052 ms
+2026-01-16T09:17:11.564633335Z 64 bytes from 51.250.51.8: seq=1 ttl=63 time=338.111 ms
+2026-01-16T09:17:12.290607031Z 64 bytes from 51.250.51.8: seq=2 ttl=63 time=64.360 ms
+2026-01-16T09:17:13.270852840Z 64 bytes from 51.250.51.8: seq=3 ttl=63 time=44.476 ms
+2026-01-16T09:17:15.462308601Z 64 bytes from 51.250.51.8: seq=5 ttl=63 time=234.291 ms
+2026-01-16T09:17:16.270881103Z 64 bytes from 51.250.51.8: seq=6 ttl=63 time=42.490 ms
+2026-01-16T09:17:17.228997152Z
+2026-01-16T09:17:17.229016558Z --- netology.ru ping statistics ---
+2026-01-16T09:17:17.229018058Z 7 packets transmitted, 6 packets received, 14% packet loss
+2026-01-16T09:17:17.229019058Z round-trip min/avg/max = 42.490/136.130/338.111 ms
+2026-01-16T09:21:19.473287706Z PING netology.ru (51.250.51.8): 56 data bytes
+2026-01-16T09:21:19.521535335Z 64 bytes from 51.250.51.8: seq=0 ttl=63 time=48.227 ms
+2026-01-16T09:21:20.909579017Z 64 bytes from 51.250.51.8: seq=1 ttl=63 time=433.976 ms
+2026-01-16T09:21:21.515836334Z 64 bytes from 51.250.51.8: seq=2 ttl=63 time=41.554 ms
+2026-01-16T09:21:22.549086190Z 64 bytes from 51.250.51.8: seq=3 ttl=63 time=72.660 ms
+2026-01-16T09:21:23.520400356Z 64 bytes from 51.250.51.8: seq=4 ttl=63 time=43.962 ms
+2026-01-16T09:21:24.519005822Z 64 bytes from 51.250.51.8: seq=5 ttl=63 time=41.792 ms
+2026-01-16T09:21:25.590753734Z
+2026-01-16T09:21:25.590759034Z --- netology.ru ping statistics ---
+2026-01-16T09:21:25.590763535Z 7 packets transmitted, 7 packets received, 0% packet loss
+2026-01-16T09:21:25.590767735Z round-trip min/avg/max = 41.554/113.543/433.976 ms
+2026-01-16T09:24:08.586260588Z PING netology.ru (51.250.51.8): 56 data bytes
+2026-01-16T09:24:08.644197972Z 64 bytes from 51.250.51.8: seq=0 ttl=63 time=57.791 ms
+2026-01-16T09:24:09.626700877Z 64 bytes from 51.250.51.8: seq=1 ttl=63 time=39.915 ms
+2026-01-16T09:24:10.632441283Z 64 bytes from 51.250.51.8: seq=2 ttl=63 time=45.535 ms
+PS F:\learning\netologiya\library-app> docker logs -t pinger
+2026-01-16T09:17:10.225212051Z PING netology.ru (51.250.51.8): 56 data bytes
+2026-01-16T09:17:10.318303283Z 64 bytes from 51.250.51.8: seq=0 ttl=63 time=93.052 ms
+2026-01-16T09:17:11.564633335Z 64 bytes from 51.250.51.8: seq=1 ttl=63 time=338.111 ms
+2026-01-16T09:17:12.290607031Z 64 bytes from 51.250.51.8: seq=2 ttl=63 time=64.360 ms
+2026-01-16T09:17:13.270852840Z 64 bytes from 51.250.51.8: seq=3 ttl=63 time=44.476 ms
+2026-01-16T09:17:15.462308601Z 64 bytes from 51.250.51.8: seq=5 ttl=63 time=234.291 ms
+2026-01-16T09:17:16.270881103Z 64 bytes from 51.250.51.8: seq=6 ttl=63 time=42.490 ms
+2026-01-16T09:17:17.228997152Z
+2026-01-16T09:17:17.229016558Z --- netology.ru ping statistics ---
+2026-01-16T09:17:17.229018058Z 7 packets transmitted, 6 packets received, 14% packet loss
+2026-01-16T09:17:17.229019058Z round-trip min/avg/max = 42.490/136.130/338.111 ms
+2026-01-16T09:21:19.473287706Z PING netology.ru (51.250.51.8): 56 data bytes
+2026-01-16T09:21:19.521535335Z 64 bytes from 51.250.51.8: seq=0 ttl=63 time=48.227 ms
+2026-01-16T09:21:20.909579017Z 64 bytes from 51.250.51.8: seq=1 ttl=63 time=433.976 ms
+2026-01-16T09:21:21.515836334Z 64 bytes from 51.250.51.8: seq=2 ttl=63 time=41.554 ms
+2026-01-16T09:21:22.549086190Z 64 bytes from 51.250.51.8: seq=3 ttl=63 time=72.660 ms
+2026-01-16T09:21:23.520400356Z 64 bytes from 51.250.51.8: seq=4 ttl=63 time=43.962 ms
+2026-01-16T09:21:24.519005822Z 64 bytes from 51.250.51.8: seq=5 ttl=63 time=41.792 ms
+2026-01-16T09:21:25.590713929Z 64 bytes from 51.250.51.8: seq=6 ttl=63 time=112.634 ms
+2026-01-16T09:21:25.590753734Z
+2026-01-16T09:21:25.590759034Z --- netology.ru ping statistics ---
+2026-01-16T09:21:25.590763535Z 7 packets transmitted, 7 packets received, 0% packet loss
+2026-01-16T09:21:25.590767735Z round-trip min/avg/max = 41.554/113.543/433.976 ms
+2026-01-16T09:24:08.586260588Z PING netology.ru (51.250.51.8): 56 data bytes
+2026-01-16T09:24:08.644197972Z 64 bytes from 51.250.51.8: seq=0 ttl=63 time=57.791 ms
+2026-01-16T09:24:09.626700877Z 64 bytes from 51.250.51.8: seq=1 ttl=63 time=39.915 ms
+2026-01-16T09:24:11.629517407Z 64 bytes from 51.250.51.8: seq=3 ttl=63 time=42.119 ms
+2026-01-16T09:24:13.631248201Z 64 bytes from 51.250.51.8: seq=5 ttl=63 time=43.252 ms
+2026-01-16T09:24:14.636588856Z
+2026-01-16T09:24:14.636600158Z --- netology.ru ping statistics ---
+2026-01-16T09:24:14.636608959Z 7 packets transmitted, 7 packets received, 0% packet loss
+2026-01-16T09:24:14.636616160Z round-trip min/avg/max = 39.915/45.440/57.791 ms
+PS F:\learning\netologiya\library-app> docker rm pinger
+pinger
+PS F:\learning\netologiya\library-app> docker ps -a
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+PS F:\learning\netologiya\library-app> docker rmi busybox
+Untagged: busybox:latest
+Deleted: sha256:2383baad1860bbe9d8a7a843775048fd07d8afe292b94bd876df64a69aae7cb1
+PS F:\learning\netologiya\library-app>
