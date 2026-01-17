@@ -1,56 +1,22 @@
-Терминал запуска first_node:
-PS F:\learning\netologiya\library-app> docker run --name second_node -it --rm -v ./data:/var/second/data node:15.14 sleep infinity
-PS F:\learning\netologiya\library-app> 
-
-Терминал запуска second_node:
-PS F:\learning\netologiya\library-app> docker run --name second_node -it --rm -v ./data:/var/second/data node:15.14 sleep infinity
-PS F:\learning\netologiya\library-app>
-
-Терминал first_node контейнер:
-PS F:\learning\netologiya\library-app> docker exec -it first_node /bin/bash
-root@ec2edb329447:/#
-root@ec2edb329447:/# ls
-bin  boot  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
-root@ec2edb329447:/# cd var/first/data
-root@ec2edb329447:/var/first/data# echo "content for text1" > text1.txt
-root@ec2edb329447:/#
-root@ec2edb329447:/# ls
-bin  boot  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
-root@ec2edb329447:/# cd var/first/data
-root@ec2edb329447:/#
-root@ec2edb329447:/# ls
-bin  boot  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
-root@ec2edb329447:/#
-root@ec2edb329447:/# ls
-root@ec2edb329447:/#
-root@ec2edb329447:/#
-root@ec2edb329447:/# ls
-bin  boot  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
-root@ec2edb329447:/#
-root@ec2edb329447:/# ls
-root@ec2edb329447:/# ls
-bin  boot  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
-root@ec2edb329447:/# cd var/first/data
-root@ec2edb329447:/var/first/data# echo "content for text1" > text1.txt
-root@ec2edb329447:/var/first/data# ls
-text1.txt
-root@ec2edb329447:/var/first/data# ls
-text1.txt  text2.txt
-root@ec2edb329447:/var/first/data#
-
-Терминал second_node контейнер:
+PS F:\learning\netologiya\library-app> docker pull node:15.14
+PS F:\learning\netologiya\library-app> docker run --name first_node -it -d -v ./data:/var/first/data node:15.14 sleep infinity
+PS F:\learning\netologiya\library-app> docker run --name second_node -it -d -v ./dat:/var/second/data node:15.14 sleep infinity
+PS F:\learning\netologiya\library-app> docker exec -d first_node echo "Контент для text1" > /var/first/data/text1.txt
+PS F:\learning\netologiya\library-app> New-Item F:\learning\netologiya\library-app/data/texthost.txt -type file -Value "Контент для texthostroot"
 PS F:\learning\netologiya\library-app> docker exec -it second_node /bin/bash
-root@28f267a560cf:/# cd var/second/data
-root@28f267a560cf:/var/second/data# ls
-text1.txt  text2.txt
-
-Терминал управления:
-PS F:\learning\netologiya\library-app> docker stop first_node second_node
+root@7b3a62c627e8:/# cd /var/second/data
+root@7b3a62c627e8:/var/second/data# ls
+text1.txt  texthost.txt
+root@7b3a62c627e8:/var/second/data# cat text1.txt texthost.txt
+Контент для text1Контент для texthostroot
+PS F:\learning\netologiya\library-app> docker stop first_node
 first_node
+PS F:\learning\netologiya\library-app> docker stop second_node
 second_node
-PS F:\learning\netologiya\library-app> docker ps -a
-CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+PS F:\learning\netologiya\library-app> docker rm first_node   
+first_node
+PS F:\learning\netologiya\library-app> docker rm second_node
+second_node
 PS F:\learning\netologiya\library-app> docker rmi node:15.14
 Untagged: node:15.14
 Deleted: sha256:608bba799613b1ebf754034ae008849ba51e88b23271412427b76d60ae0d0627
-PS F:\learning\netologiya\library-app> 
