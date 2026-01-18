@@ -1,13 +1,16 @@
 import express from 'express';
-// import expressLayouts from 'express-ejs-layouts';
+import path from 'path';
 import logger from './middleware/logger.js';
 import err404 from './middleware/err-404.js';
 import userRouter from './routes/user.js';
 import indexRoutes from './routes/index.js';
 
+import { ROOT_PATH } from './root-path.const.js';
+
 const app = express();
 app.use(express.urlencoded());
-app.set('view engine', 'ejs')
+app.set('views', path.join(ROOT_PATH, '/views'))
+app.set('view engine','ejs');
 
 app.use(logger);
 app.use('/user', userRouter);

@@ -4,7 +4,7 @@ import path from 'path';
 import fileMulter from '../middleware/file.js';
 
 import { Book } from '../entitys/books.js';
-import { rootPath } from '../root-path.const.js';
+import { ROOT_PATH } from '../root-path.const.js';
 
 const router = express.Router();
 
@@ -54,7 +54,7 @@ router.get('/:id/download', (req, res) => {
     if (idx !== -1) {
         const fileName = library[idx].fileBook;
         const options = {
-            root: path.join(rootPath, 'public')
+            root: path.join(ROOT_PATH, 'public')
         };
         res.sendFile(fileName, options, (err) => {          
             if (err) {

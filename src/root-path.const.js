@@ -1,4 +1,4 @@
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 
-export const rootPath = dirname(fileURLToPath(import.meta.url));
+export const ROOT_PATH = dirname(fileURLToPath(import.meta.url));
