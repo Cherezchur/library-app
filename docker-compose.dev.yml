@@ -1,0 +1,27 @@
+services:
+  storage:
+    image: redis
+    volumes:
+      - ./data:/data
+  counter:
+    image: node:20.10
+    working_dir: /counter-app
+    volumes:
+      - ./counter:/counter-app
+    environment:
+      - PORT=3001
+    ports:
+      - 3001:3001
+    command: npm run dev
+    depends_on:
+      - storage
+  app:
+    image: node:20.10
+    working_dir: /app
+    volumes:
+      - ./src:/app
+    environment:
+      - PORT=3002
+    ports:
+      - 3002:3002
+    command: npm run dev

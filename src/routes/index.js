@@ -1,5 +1,6 @@
 import express from 'express';
 import path from 'path';
+import axios from 'axios';
 
 import fileMulter from '../middleware/file.js';
 
@@ -13,6 +14,14 @@ const stor = {
         new Book(),
         new Book(),
     ]
+}
+
+async function getViewsCount(bookId) {
+    const response = await axios.get(`http://localhost:8001/counter/${bookId}`);
+
+    return response.data.count
+        ? response.data.count
+        : ''
 }
 
 router.get('/', (req, res) => {
@@ -30,15 +39,19 @@ router.get('/create', (req, res) => {
     });
 })
 
-router.get('/:id', (req, res) => {   
+router.get('/:id', async (req, res) => {
     const { library } = stor;
     const { id } = req.params;
     const idx = library.findIndex(el => el.id === id);
+    const viewsCount = await getViewsCount(idx);
+
+    console.log('get book', idx, viewsCount);
 
     if (idx !== -1) {
         res.render('library/view', {
             title: 'Книга',
-            book: library[idx]
+            book: library[idx],
+            viewsCount: viewsCount,
         });
     } else {
         res.status(404);
