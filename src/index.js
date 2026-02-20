@@ -4,6 +4,7 @@ import logger from './middleware/logger.js';
 import err404 from './middleware/err-404.js';
 import userRouter from './routes/user.js';
 import indexRoutes from './routes/index.js';
+import mongoose from 'mongoose';
 
 import { ROOT_PATH } from './root-path.const.js';
 
@@ -18,8 +19,18 @@ app.use('/books', indexRoutes);
 
 app.use(err404);
 
-const PORT = process.env.PORT || 3002;
+async function start(PORT, UrlDB) {
+  try {
+    await mongoose.connect(UrlDB);
+    app.listen(PORT, () => {
+      console.log(`Server is running on http://localhost:${PORT}`)
+    });
+  } catch(e) {
+    console.log(e);
+  }
+}
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`)
-});
+const PORT = process.env.PORT || 3002;
+const UrlDB = process.env.MONGO_URL;
+
+start(PORT, UrlDB);

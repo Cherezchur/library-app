@@ -1,11 +1,11 @@
 import express from 'express';
 import path from 'path';
-import axios from 'axios';
 
 import fileMulter from '../middleware/file.js';
 
 import { Book } from '../entitys/books.js';
 import { ROOT_PATH } from '../root-path.const.js';
+import BookModel from '../models/book.js';
 
 const router = express.Router();
 
@@ -16,21 +16,17 @@ const stor = {
     ]
 }
 
-async function getViewsCount(bookId) {
-    const response = await axios.get(`http://localhost:8001/counter/${bookId}`);
-
-    return response.data.count
-        ? response.data.count
-        : ''
-}
-
-router.get('/', (req, res) => {
-    const { library } = stor;
-    
-    res.render('library/index', {
-        title: 'Библиотека',
-        library: library
-    });
+router.get('/', async (req, res) => {
+    try {
+        const books = await BookModel.find().select('-__v');
+        
+        res.render('library/index', {
+            title: 'Библиотека',
+            library: books
+        });
+    } catch(e) {
+        res.status(500).json(e);
+    }
 })
 
 router.get('/create', (req, res) => {
@@ -39,27 +35,65 @@ router.get('/create', (req, res) => {
     });
 })
 
-router.get('/:id', async (req, res) => {
+router.post('/create', async (req, res) => {;
     const { library } = stor;
+    const {
+        title,
+        desc,
+        authors,
+        favorite,
+        fileCover,
+        fileName,
+        fileBook
+    } = req.body;
+
+    const newBook = new BookModel({
+        title,
+        desc,
+        authors,
+        favorite,
+        fileCover,
+        fileName,
+        fileBook
+    });
+
+    try {
+        await newBook.save();
+        res.redirect('/books');
+    } catch (error) {
+        res.status(500).json(error);
+    }
+})
+
+router.get('/:id', async (req, res) => {
     const { id } = req.params;
-    const idx = library.findIndex(el => el.id === id);
-    const viewsCount = await getViewsCount(idx);
 
-    console.log('get book', idx, viewsCount);
+    console.log('get id:', id);
+    
+    try {
+        const book = await BookModel.findById(id).select('-__v');
 
-    if (idx !== -1) {
+        console.log('get id book:', book);
+
+        if (!book) {
+            return res.status(404).json({ error: 'Книга не найдена' });
+        }
+
         res.render('library/view', {
             title: 'Книга',
-            book: library[idx],
-            viewsCount: viewsCount,
+            book: book,
         });
-    } else {
-        res.status(404);
-        res.json('404 | страница не найдена');
+    } catch(e) {
+        res.status(500).json(e);
     }
 })
 
 router.get('/:id/download', (req, res) => {
+    try {
+ 
+    } catch(e) {
+        res.status(500).json(e);
+    }
     const { library } = stor;
     const { id } = req.params;
     const idx = library.findIndex(el => el.id === id);
@@ -80,42 +114,14 @@ router.get('/:id/download', (req, res) => {
     }
 })
 
-router.post('/create', (req, res) => {;
-    const { library } = stor;
-    const {
-        title,
-        desc,
-        authors,
-        favorite,
-        fileCover,
-        fileName,
-        fileBook
-    } = req.body;
-
-    const newBook = new Book(
-        title,
-        desc,
-        authors,
-        favorite,
-        fileCover,
-        fileName,
-        fileBook
-    )
-    
-    library.push(newBook);
-
-    res.redirect('/books');
-})
-
-router.get('/update/:id', (req, res) => {
-    const { library } = stor;
+router.get('/update/:id', async (req, res) => {
     const { id } = req.params;
-    const idx = library.findIndex(el => el.id === id);
+    const book = await BookModel.findById(id).select('-__v');
 
-    if (idx !== -1) {
+    if (book) {
         res.render('library/update', {
             title: 'Редактировать книгу',
-            book: library[idx]
+            book: book,
         });
     } else {
         res.status(404);
@@ -123,7 +129,7 @@ router.get('/update/:id', (req, res) => {
     }
 }) 
 
-router.post('/update/:id', (req, res) => {
+router.post('/update/:id', async (req, res) => {
     const { library } = stor;
     const {
         title,
@@ -134,38 +140,33 @@ router.post('/update/:id', (req, res) => {
         fileName,
         fileBook
     } = req.body;
+
     const { id } = req.params;
-    const idx = library.findIndex(el => el.id === id);
 
-    if (idx === -1) {
-        res.redirect('/404');
+    try {
+        await BookModel.findByIdAndUpdate(id, {
+            title,
+            desc,
+            authors,
+            favorite,
+            fileCover,
+            fileName,
+            fileBook
+        });
+        res.redirect(`/books/${id}`);
+    } catch (error) {
+        res.status(500).json(error);
     }
-
-    library[idx] = {
-        ...library[idx],
-        title,
-        desc,
-        authors,
-        favorite,
-        fileCover,
-        fileName,
-        fileBook
-    }
-
-    res.redirect(`/books/${id}`);
 })
 
-router.delete('/:id', (req, res) => {
-    const { library } = stor;
+router.delete('/:id',  async (req, res) => {
     const { id } = req.params;
-    const idx = library.findIndex(el => el.id === id);
-
-    if(idx !== -1) {
-        library.splice(idx, 1);
-        res.json(true);
-    } else {
-        res.status(404);
-        res.json('404 | страница не найдена')
+    
+    try {
+        await BookModel.findByIdAndDelete({_id: id});
+        res.redirect('/books');
+    } catch (error) {
+        res.status(500).json(error);
     }
 })
 
