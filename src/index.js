@@ -5,10 +5,17 @@ import err404 from './middleware/err-404.js';
 import userRouter from './routes/user.js';
 import indexRoutes from './routes/index.js';
 import mongoose from 'mongoose';
+import http from "http";
+import {initSocket} from './services/socket.js';
 
 import { ROOT_PATH } from './root-path.const.js';
 
 const app = express();
+const server = http.createServer(app);
+initSocket(server);
+const PORT = process.env.PORT || 3002;
+const UrlDB = process.env.MONGO_URL;
+
 app.use(express.urlencoded());
 app.set('views', path.join(ROOT_PATH, '/views'))
 app.set('view engine','ejs');
@@ -29,8 +36,5 @@ async function start(PORT, UrlDB) {
     console.log(e);
   }
 }
-
-const PORT = process.env.PORT || 3002;
-const UrlDB = process.env.MONGO_URL;
 
 start(PORT, UrlDB);
