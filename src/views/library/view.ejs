@@ -3,7 +3,7 @@
 
 <h1><%= title %></h1>
 
-<div class="row">
+<div class="collumns">
     <div class="col-sm-8">
         <div class="card">
             <div class="card-body">
@@ -22,10 +22,59 @@
                         </button>
                     </form>
                 </div>
-
             </div>
         </div>
     </div>
+
+    <div class="col-4 mt-4">
+        <h3>Что вы думаете о данной книге?</h3>
+        <div class="form-group">
+            <label for="text">message</label>
+            <textarea
+                    placeholder="message"
+                    class="form-control"
+                    id="comment"
+            ></textarea>
+        </div>
+        <button type="submit" id="send-room" class="btn btn-primary">here</button>
+    </div>
+
+    <div class="col-4 mt-4">
+        <h3>Мнения о книге</h3>
+        <div id="list" class="list-group">
+
+        </div>
+    </div>
 </div>
+
+<script>
+    const roomName = location.pathname.split('/').pop();
+    const socket = io();
+    
+    const coomentList = document.querySelector('#list');
+    const inputText = document.querySelector('#comment');
+    const sendRoom = document.querySelector('#send-room');
+
+    const getTmp = (msg) => {
+        return `
+                <div class="list-group-item list-group-item-action">
+                    <p class="mb-1">${msg.comment}</p>
+                </div>
+        `;
+    };
+
+    socket.on('message-to-room', (msg) => {
+        const div = getTmp(msg)
+        coomentList.insertAdjacentHTML('beforeend', div)
+    });
+
+    sendRoom.addEventListener('click', () => {
+        socket.emit('message-to-room', {
+            comment: inputText.value,
+        })
+    })
+
+
+</script>
 
 <%- include('../layouts/layout-end') %>

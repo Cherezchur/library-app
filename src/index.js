@@ -6,13 +6,31 @@ import userRouter from './routes/user.js';
 import indexRoutes from './routes/index.js';
 import mongoose from 'mongoose';
 import http from "http";
-import {initSocket} from './services/socket.js';
+import { Server } from 'socket.io';
 
 import { ROOT_PATH } from './root-path.const.js';
 
 const app = express();
 const server = http.createServer(app);
-initSocket(server);
+let io = new Server(server);
+
+io.on("connection", (socket) => {
+
+    // работа с комнатами
+    const {roomName} = socket.handshake.query;
+    console.log(`Socket roomName: ${roomName}`);
+    socket.join(roomName);
+    socket.on('message-to-room', (msg) => {
+        msg.type = `room: ${roomName}`;
+        socket.to(roomName).emit('message-to-room', msg);
+        socket.emit('message-to-room', msg);
+    });
+
+    socket.on("disconnect", () => {
+        console.log("Отключился:", socket.id);
+    });
+});
+
 const PORT = process.env.PORT || 3002;
 const UrlDB = process.env.MONGO_URL;
 
@@ -29,7 +47,7 @@ app.use(err404);
 async function start(PORT, UrlDB) {
   try {
     await mongoose.connect(UrlDB);
-    app.listen(PORT, () => {
+    server.listen(PORT, () => {
       console.log(`Server is running on http://localhost:${PORT}`)
     });
   } catch(e) {
