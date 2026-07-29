@@ -17,7 +17,7 @@ export class Book {
         this.favorite = favorite
         this.fileCover = fileCover
         this.fileName = fileName
-        this.fileBook = fileBook,
+        this.fileBook = fileBook
         this.id = id
     }
 }

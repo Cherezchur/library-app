@@ -22,7 +22,7 @@ const bookSchema = new Schema({
     },
     fileName: {
         type: String,
-    }
+    },
 })
 
 export default model('BookModel', bookSchema);

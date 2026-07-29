@@ -6,30 +6,13 @@ import userRouter from './routes/user.js';
 import indexRoutes from './routes/index.js';
 import mongoose from 'mongoose';
 import http from "http";
-import { Server } from 'socket.io';
+import { setSocket } from './services/socket.js';
 
 import { ROOT_PATH } from './root-path.const.js';
 
 const app = express();
 const server = http.createServer(app);
-let io = new Server(server);
-
-io.on("connection", (socket) => {
-
-    // работа с комнатами
-    const {roomName} = socket.handshake.query;
-    console.log(`Socket roomName: ${roomName}`);
-    socket.join(roomName);
-    socket.on('message-to-room', (msg) => {
-        msg.type = `room: ${roomName}`;
-        socket.to(roomName).emit('message-to-room', msg);
-        socket.emit('message-to-room', msg);
-    });
-
-    socket.on("disconnect", () => {
-        console.log("Отключился:", socket.id);
-    });
-});
+setSocket(server);
 
 const PORT = process.env.PORT || 3002;
 const UrlDB = process.env.MONGO_URL;

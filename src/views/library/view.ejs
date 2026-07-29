@@ -42,7 +42,12 @@
     <div class="col-4 mt-4">
         <h3>Мнения о книге</h3>
         <div id="list" class="list-group">
-
+            <% comments.forEach((comment) => { %>
+                <div class="list-group-item list-group-item-action">
+                    <p class="mb-1"><%= comment.comment %></p>
+                    <span class="mb-1"><%= comment.date %></span>
+                </div>
+            <% }) %>
         </div>
     </div>
 </div>
@@ -55,26 +60,31 @@
     const inputText = document.querySelector('#comment');
     const sendRoom = document.querySelector('#send-room');
 
-    const getTmp = (msg) => {
-        return `
-                <div class="list-group-item list-group-item-action">
-                    <p class="mb-1">${msg.comment}</p>
-                </div>
-        `;
+    function setComment(msg) {
+        const item = document.createElement('div');
+        item.className = 'list-group-item list-group-item-action';
+
+        const p = document.createElement('p');
+        p.className = 'mb-1';
+        p.textContent = msg.comment;
+
+        const span = document.createElement('span');
+        span.className = 'mb-1';
+        span.textContent = new Date().toLocaleString();
+
+        item.appendChild(p);
+        item.appendChild(span);
+        coomentList.prepend(item);
     };
 
-    socket.on('message-to-room', (msg) => {
-        const div = getTmp(msg)
-        coomentList.insertAdjacentHTML('beforeend', div)
-    });
+    socket.on('message-to-room', (msg) => setComment(msg));
 
     sendRoom.addEventListener('click', () => {
         socket.emit('message-to-room', {
             comment: inputText.value,
+            bookId: roomName
         })
     })
-
-
 </script>
 
 <%- include('../layouts/layout-end') %>
